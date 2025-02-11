@@ -1,0 +1,2 @@
+Library: numpy, pandas, matplotlib, seaborn, pyspark
+Python: 3.9.13
