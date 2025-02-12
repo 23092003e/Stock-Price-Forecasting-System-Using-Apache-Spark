@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
+from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 
 class TimeSeriesLSTM(Dataset):
@@ -43,4 +44,47 @@ class LSTMModel(nn.Module):
         # Decode the hidden state of the last time step
         out = self.fc(out[:, -1, :])
         
-        return out
+        return out    
+    
+    def create_sequences(data, seq_length):
+        X, y = [], []
+        for i in range(len(data) - seq_length):
+            X.append(data[i:(i + seq_length)])
+            y.append(data[i + seq_length])
+            
+        return np.array(X), np.array(y)
+    
+    def train_model(model, train_loader, criterion, optimizer, device):
+        model.train()
+        total_loss = 0
+        
+        for batch_X, batch_y in train_loader:
+            batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+            
+            # Forward pass
+            outputs = model(batch_X)
+            loss = criterion(outputs, batch_y)
+            
+            # Backward and optimize
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            
+            total_loss += loss.item()
+            
+        return total_loss / len (train_loader)
+
+    def evaluate_model(model, test_loader, criterion, device):
+        model.eval()
+        total_loss = 0
+        
+        with torch.no_grad():
+            for batch_X, batch_y in test_loader:
+                batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+                outputs = model(batch_X)
+                loss = criterion(outputs, batch_y)
+                total_loss += loss.item()
+            return total_loss / len(test_loader)
+                
+        
+        
