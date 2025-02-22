@@ -1,2 +1,6 @@
-Library: numpy, pandas, matplotlib, seaborn, pyspark
-Python: 3.9.13
+pandas
+numpy
+matplotlib 
+seaborn
+findspark
+pyspark==3.4.0
