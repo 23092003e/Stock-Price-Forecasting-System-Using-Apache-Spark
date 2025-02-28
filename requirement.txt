@@ -1,6 +1,7 @@
-pandas
-numpy
-matplotlib 
-seaborn
-findspark
-pyspark==3.4.0
+Apache Spark 3.0+
+Python 3.6+
+PySpark
+Pandas
+Matplotlib
+Seaborn
+Streamlit
