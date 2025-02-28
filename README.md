@@ -45,7 +45,8 @@ The Netflix Stock Price Prediction System uses advanced machine learning techniq
     - Insights derived from the analysis of historical stock market data.
 
 ## Project Structure
-Stock price Forecasting System using Apache Spark/
+#### Stock price Forecasting System using Apache Spark/
+
 ├── data/                  # Raw and processed data
 │   ├── processed
 │   ├── raw
