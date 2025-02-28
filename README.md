@@ -46,25 +46,25 @@ The Netflix Stock Price Prediction System uses advanced machine learning techniq
 
 ## Project Structure
 Stock price Forecasting System using Apache Spark/
-├── data/                  # Raw and processed data
-│   ├── processed
-│   ├── raw
-├── image/                
-├── models/
-│   ├── lstm.pth
-│   ├── scaler.pkl
-├── notebooks/             
-│   ├── data_preprocessing.ipynb   
-│   ├── AMIRA.ipynb      
-│   ├── Explanatory_Data_Analysis.ipynb          
-│   ├── Linear_Regressor.ipynb      
-│   └── LSTM.ipynb      
-├── helper_function.py
-├── lstm.py
-├── src.py
-├── dashboard.py    
-├── requirement.txt
-└── README.md
+- ├── data/                  # Raw and processed data
+- │   ├── processed
+- │   ├── raw
+- ├── image/                
+- ├── models/
+- │   ├── lstm.pth
+- │   ├── scaler.pkl
+- ├── notebooks/             
+- │   ├── data_preprocessing.ipynb   
+- │   ├── AMIRA.ipynb      
+- │   ├── Explanatory_Data_Analysis.ipynb          
+- │   ├── Linear_Regressor.ipynb      
+- │   └── LSTM.ipynb      
+- ├── helper_function.py
+- ├── lstm.py
+- ├── src.py
+- ├── dashboard.py    
+- ├── requirement.txt
+- └── README.md
 
 ## Performance Optimization
 **The system includes several Spark optimizations:**
