@@ -45,26 +45,26 @@ The Netflix Stock Price Prediction System uses advanced machine learning techniq
     - Insights derived from the analysis of historical stock market data.
 
 ## Project Structure
-Stock price Forecasting System using Apache Spark/
-├── data/                  # Raw and processed data
-│   ├── processed
-│   ├── raw
-├── image/                
-├── models/
-│   ├── lstm.pth
-│   ├── scaler.pkl
-├── notebooks/             
-│   ├── data_preprocessing.ipynb   
-│   ├── AMIRA.ipynb      
-│   ├── Explanatory_Data_Analysis.ipynb          
-│   ├── Linear_Regressor.ipynb      
-│   └── LSTM.ipynb      
-├── helper_function.py
-├── lstm.py
-├── src.py
-├── dashboard.py    
-├── requirement.txt
-└── README.md
+Stock-Price-Forecasting-System/
+├── data/                    # Directory for raw and processed data
+│   ├── processed/           # Processed data ready for modeling
+│   └── raw/                # Raw, unprocessed data
+├── image/                  # Directory for storing generated images (if any)
+├── models/                 # Trained models and related files
+│   ├── lstm.pth            # Pre-trained LSTM model
+│   └── scaler.pkl          # Scaler object for data normalization
+├── notebooks/              # Jupyter notebooks for analysis and modeling
+│   ├── data_preprocessing.ipynb   # Data cleaning and preprocessing steps
+│   ├── AMIRA.ipynb         # AMIRA-specific analysis or modeling
+│   ├── Explanatory_Data_Analysis.ipynb  # Exploratory data analysis
+│   ├── Linear_Regressor.ipynb      # Linear regression model implementation
+│   └── LSTM.ipynb          # LSTM model development and training
+├── helper_function.py      # Helper/utility functions for the project
+├── lstm.py                 # LSTM model implementation
+├── src.py                  # Main source code for the system
+├── dashboard.py            # Dashboard script (e.g., for visualization)
+├── requirement.txt         # List of project dependencies
+└── README.md               # Project documentation (this file)
 
 ## Performance Optimization
 **The system includes several Spark optimizations:**
