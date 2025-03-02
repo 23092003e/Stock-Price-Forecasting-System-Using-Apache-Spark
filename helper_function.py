@@ -1,6 +1,6 @@
 from pyspark.ml.feature import VectorAssembler
 from pyspark.sql.functions import col, to_timestamp
-
+import numpy as np
 # Help function to set model parameters
 def set_model_params(model, param_map):
     for param, value in param_map.items():
@@ -54,3 +54,25 @@ def train_model(train_set, test_set, model, evaluator, paramGrid,
     print("Test Metrics: ", test_metrics)  
 
     return best_model, predictions, train_metrics, test_metrics 
+
+
+
+
+#### LSTM Helper Function
+def create_sequences(data, sequence_length):
+    X = []
+    y = []
+    for i in range(len(data) - sequence_length):
+        X.append(data[i:i + sequence_length])
+        y.append(data[i + sequence_length])
+    return np.array(X), np.array(y)
+
+def inverse_scale(scaled_vector, data):
+    X_max = data.select('Close').rdd.max()[0]
+    X_min = data.select('Close').rdd.min()[0]
+    
+    scaler_min = 0.0
+    scaler_max = 1.0
+    
+    return ((scaler_max * X_min) - (scaler_min * X_max) -(X_min * scaled_vector) + (X_max * scaled_vector) / \
+        (scaler_max - scaler_min))
