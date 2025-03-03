@@ -60,19 +60,16 @@ def train_model(train_set, test_set, model, evaluator, paramGrid,
 
 #### LSTM Helper Function
 def create_sequences(data, sequence_length):
-    X = []
-    y = []
+    X, y = [], []
     for i in range(len(data) - sequence_length):
         X.append(data[i:i + sequence_length])
         y.append(data[i + sequence_length])
     return np.array(X), np.array(y)
 
 def inverse_scale(scaled_vector, data):
-    X_max = data.select('Close').rdd.max()[0]
-    X_min = data.select('Close').rdd.min()[0]
-    
+    X_max = data.select('close').rdd.max()[0]
+    X_min = data.select('close').rdd.min()[0]
     scaler_min = 0.0
     scaler_max = 1.0
-    
-    return ((scaler_max * X_min) - (scaler_min * X_max) -(X_min * scaled_vector) + (X_max * scaled_vector) / \
-        (scaler_max - scaler_min))
+    return (scaler_max * X_min - scaler_min * X_max - X_min * scaled_vector + X_max * scaled_vector) / \
+                  (scaler_max - scaler_min)
