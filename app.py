@@ -15,7 +15,14 @@ import numpy as np
 import joblib
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-scaler = joblib.load('scaler.pkl')
+scaler_path = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\model\scaler.pkl"
+data_path = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\data\processed\data.csv"
+lr_model_path = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\model\linear_regressor_sklearn.pkl"
+lstm_model_path = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\model\lstm.pth"
+test_data = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\data\processed\test.csv"
+
+
+scaler = joblib.load(scaler_path)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def initialize_spark():
@@ -32,7 +39,7 @@ def initialize_spark():
 
 def load_data():
     try:
-        data = pd.read_csv('./data/NFLX.csv')
+        data = pd.read_csv(data_path)
         return data        
     except Exception as e:
         st.error(f"Failed to load data. Error: {e}")
@@ -53,14 +60,10 @@ def load_lstm_model(model_path, input_size, output_size):
 
 def load_model(chosen_model):
     try:
-        if chosen_model == 'Linear Regressor':
-            path = './models/linear_regressor'
-            model = LinearRegressionModel.load(path)
-        elif chosen_model == 'Decision Tree Regressor':
-            path = './models/decision_tree_regressor'
-            model = DecisionTreeRegressionModel.load(path)
+        if chosen_model == 'Linear Regressor Model':
+            model = joblib.load(lr_model_path)
         elif chosen_model == 'LSTM':
-            path = './models/lstm.pth'
+            path = lstm_model_path
             model = load_lstm_model(path, input_size=1, output_size=1)
         else:
             st.error("Invalid model selected.")
@@ -73,7 +76,7 @@ def load_model(chosen_model):
 
 def preprocess_lstm_data(look_back, num_days, scaler = scaler):
     try:
-        data = pd.read_csv('./data/test.csv').sort_values(by="Date")
+        data = pd.read_csv(test_data).sort_values(by="Date")
         scaled_data = scaler.transform(data[['Close']].values.astype('float32'))
 
         def create_dataset(dataset, look_back, num_days):
