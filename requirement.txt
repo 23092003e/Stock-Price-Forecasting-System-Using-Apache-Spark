@@ -1,6 +1,4 @@
-Apache Spark 3.0+
-Python 3.6+
-PySpark
+PySpark==3.5.4
 Pandas
 Matplotlib
 Seaborn
