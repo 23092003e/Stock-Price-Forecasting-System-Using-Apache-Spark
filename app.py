@@ -18,7 +18,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 scaler_path = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\model\scaler.pkl"
 data_path = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\data\processed\data.csv"
 lr_model_path = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\model\linear_regressor_sklearn.pkl"
-lstm_model_path = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\model\lstm.pth"
+lstm_model_path = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\model\lstm_model.pth"
 test_data = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\data\processed\test.csv"
 
 
