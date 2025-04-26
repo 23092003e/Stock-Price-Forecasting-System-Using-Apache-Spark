@@ -24,7 +24,9 @@ def convert_data_format(df: DataFrame) -> DataFrame:
     return df
 
 def feature_engineering(df: DataFrame) -> DataFrame:
+    df = df.copy()
     window = Window.partitionBy("Date").orderBy("Date")
+    
     
 
 

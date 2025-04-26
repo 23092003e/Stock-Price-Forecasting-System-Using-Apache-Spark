@@ -33,6 +33,8 @@ test_path = "data/processed/test.csv"
 #         lstm_out, self.hidden_cell = self.lstm(input_seq.view(len(input_seq), 1, -1), self.hidden_cell)
 #         predictions = self.linear(lstm_out.view(len(input_seq), -1))
 #         return predictions[-1]
+
+    
 class LSTMModel(torch.nn.Module):
     def __init__(self, input_size=1, output_size=1):
         super().__init__()
