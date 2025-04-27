@@ -1,3 +1,8 @@
+import os, sys
+
+os.environ["PYSPARK_PYTHON"] = sys.executable
+os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -6,9 +11,15 @@ from joblib import load
 import torch
 import matplotlib.pyplot as plt
 import seaborn as sns
-from datetime import timedelta, datetime
+from datetime import timedelta
 import os
-from sklearn.preprocessing import MinMaxScaler
+
+# Spark imports for scaling
+from pyspark.sql import SparkSession
+from pyspark.ml.feature import VectorAssembler, MinMaxScaler
+from pyspark.ml import Pipeline
+from pyspark.sql.functions import udf
+from pyspark.sql.types import ArrayType, FloatType
 
 # Paths to models and data
 scaler_path = "model/scaler.pkl"
@@ -19,22 +30,6 @@ hybrid_model_path = "model/hybrid_model.pkl"
 train_path = "data/processed/train.csv"
 test_path = "data/processed/test.csv"
 
-# Define LSTM model architecture to match the saved model
-# class LSTMModel(torch.nn.Module):
-#     def __init__(self, input_size=1, hidden_layer_size=50, output_size=1):
-#         super().__init__()
-#         self.hidden_layer_size = hidden_layer_size
-#         self.lstm = torch.nn.LSTM(input_size, hidden_layer_size)
-#         self.linear = torch.nn.Linear(hidden_layer_size, output_size)
-#         self.hidden_cell = (torch.zeros(1, 1, self.hidden_layer_size),
-#                             torch.zeros(1, 1, self.hidden_layer_size))
-
-#     def forward(self, input_seq):
-#         lstm_out, self.hidden_cell = self.lstm(input_seq.view(len(input_seq), 1, -1), self.hidden_cell)
-#         predictions = self.linear(lstm_out.view(len(input_seq), -1))
-#         return predictions[-1]
-
-    
 class LSTMModel(torch.nn.Module):
     def __init__(self, input_size=1, output_size=1):
         super().__init__()
@@ -105,19 +100,42 @@ def load_models():
 @st.cache_data
 def load_data():
     try:
-        if not os.path.exists(train_path):
-            raise FileNotFoundError(f"Train file not found: {train_path}")
-        if not os.path.exists(test_path):
-            raise FileNotFoundError(f"Test file not found: {test_path}")
-        
-        # Load historical data
-        df = pd.read_csv(train_path)
-        df['Date'] = pd.to_datetime(df['Date'])
-        
-        # Load test data
-        test_df = pd.read_csv(test_path)
-        test_df['Date'] = pd.to_datetime(test_df['Date'])
-        
+        # Load raw CSV into pandas
+        train_pdf = pd.read_csv(train_path, parse_dates=['Date'])
+        test_pdf  = pd.read_csv(test_path,  parse_dates=['Date'])
+
+        # Initialize Spark
+        spark = (SparkSession.builder
+                .master("local[*]")
+                .appName("StreamlitScaling")
+                .config("spark.pyspark.python", sys.executable)
+                .config("spark.pyspark.driver.python", sys.executable)
+                .getOrCreate())
+        # Define feature columns and pipeline
+        feature_cols = ["Open", "High", "Low", "Volume", "Price_Range",
+                        "Daily_Change", "MA_10", "MA_50", "RSI",
+                        "Upper_BB", "Lower_BB", "Stoch_Osc"]
+        assembler = VectorAssembler(inputCols=feature_cols, outputCol='features')
+        scaler_spark = MinMaxScaler(inputCol='features', outputCol='scaled_features')
+        pipeline = Pipeline(stages=[assembler, scaler_spark])
+
+        # Create Spark DataFrames
+        train_sdf = spark.createDataFrame(train_pdf)
+        test_sdf  = spark.createDataFrame(test_pdf)
+
+        # Fit and transform
+        transformer      = pipeline.fit(train_sdf)
+        train_scaled_sdf = transformer.transform(train_sdf)
+        test_scaled_sdf  = transformer.transform(test_sdf)
+
+        # UDF to convert vector to Python list
+        to_list = udf(lambda v: v.toArray().tolist(), ArrayType(FloatType()))
+        train_scaled_sdf = train_scaled_sdf.withColumn("features", to_list("scaled_features")).select("Date","features","Close")
+        test_scaled_sdf  = test_scaled_sdf.withColumn("features", to_list("scaled_features")).select("Date","features","Close")
+
+        # Convert back to pandas
+        df      = train_scaled_sdf.toPandas()
+        test_df = test_scaled_sdf.toPandas()
         return df, test_df
     except Exception as e:
         st.error(f"Error loading data: {e}")
