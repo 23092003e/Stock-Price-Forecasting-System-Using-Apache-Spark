@@ -1,86 +1,188 @@
-# Netflix Stock Price Forecasting System Using Apache Spark
+# Netflix Stock Price Forecasting System Using Apache Spark 🚀
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/23092003e/Stock-Price-Forecasting-System-Using-Apache-Spark/actions)
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-This project implements a stock price forecasting system for Netflix using Apache Spark. The system analyzes historical stock market data, builds predictive models, and deploys a real-time forecasting pipeline.
-## Overview
+> **A scalable, real-time stock price forecasting system for Netflix, powered by Apache Spark and advanced machine learning.**
 
-The Netflix Stock Price Prediction System uses advanced machine learning techniques to predict future stock prices, enabling informed investment decisions. The system is built with Apache Spark for scalable data processing and includes a real-time streaming component for ongoing predictions.
+![Dashboard Screenshot](image/demo_dashboard.png)  
+<!-- Or use a link to a demo video/GIF if available -->
+
+---
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Architecture & Tech Stack](#architecture--tech-stack)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Examples & Screenshots](#examples--screenshots)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
+- [Authors & Contact](#authors--contact)
+
+---
+
+## Project Overview
+
+**Netflix Stock Price Forecasting System** leverages Apache Spark for distributed data processing and machine learning to predict Netflix (NFLX) stock prices. The system provides an interactive dashboard for real-time forecasting, historical analysis, and model performance evaluation.
+
+- **Demo:** [YouTube Demo](https://youtu.be/your-demo-link) <!-- Replace with your actual demo link -->
+- **Live Dashboard:** _Coming soon_
+
+---
 
 ## Features
 
-- **Data preprocessing and cleaning pipeline** for stock market data
-- **Technical indicator generation** including moving averages, RSI, and Bollinger Bands
-- **Multiple prediction models** (Linear Regression, AMIRA, Long Short Term Memory)
-- **Real-time prediction streaming** for continuous forecasting
-- **Interactive dashboard**** for visualizing predictions and model performance
-- **Alerting system** for significant price movement detection
+- ⚡ **Distributed Data Processing** with Apache Spark
+- 📈 **Technical Indicator Generation** (MA, RSI, Bollinger Bands, etc.)
+- 🤖 **Multiple Prediction Models**: Linear Regression, LSTM, Hybrid
+- 🖥️ **Interactive Streamlit Dashboard** for visualization and analysis
+- 🔔 **Real-time Prediction Streaming** and alerting for significant price changes
+- 📊 **Performance Metrics** and error analysis
+- 🛡️ **Data Quality Checks** and preprocessing pipeline
 
-## Technologies & Tools
-- **Knowledge**: Machine Learning, Deep Learning, Big Data Technology
-- **Apache Spark:** Distributed data processing and model training.
-- **Python:** Main programming language.
-- **Jupyter Notebook:** Primary development environment (see `src.ipynb`).
-- **Additional Libraries:** Refer to `requirement.txt` for the complete list of required packages.
+---
 
+## Architecture & Tech Stack
 
-## Installation & Setup
+**Architecture Overview:**
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/23092003e/Stock-Price-Forecasting-System-Using-Apache-Spark.git
-   cd Stock-Price-Forecasting-System-Using-Apache-Spark
+```
+Raw Data (CSV) → Data Preprocessing (Spark) → Feature Engineering → Model Training (LR, LSTM, Hybrid) → 
+Model Serialization → Streamlit Dashboard (Real-time Prediction & Visualization)
+```
 
+**Main Technologies:**
 
-2. **Install the required libraries: Use the following command to install the dependencies:**
-    ```bash
-    pip install -r requirement.txt
+- **Python 3.8+**
+- **Apache Spark** (PySpark)
+- **Pandas, NumPy, Scikit-learn**
+- **PyTorch** (for LSTM)
+- **Streamlit** (dashboard)
+- **Matplotlib, Seaborn** (visualization)
+- **Joblib** (model serialization)
 
-3. **Run the Project:**
-    - Open src.ipynb using Jupyter Notebook.
-    - Execute the notebook cells in order to preprocess the data, train the models, and generate stock price forecasts.
+---
 
-4. **Results & Evaluation**
-   Upon running the project, you will obtain:
-    - Real-time stock price forecasts.
-    - Visualizations and performance metrics that evaluate the model's accuracy.
-    - Insights derived from the analysis of historical stock market data.
+## Installation
 
-## Project Structure
-#### Stock price Forecasting System using Apache Spark/
+### Requirements
 
-├── data/                  # Raw and processed data
-├── image/                
-├── models/
-├── notebooks/               
-├── helper_function.py
-├── lstm.py
-├── src.py
-├── dashboard.py    
-├── requirement.txt
-└── README.md
+- **OS:** Linux, macOS, or Windows
+- **Python:** 3.8 or higher
+- **Java:** 8+ (for Apache Spark)
+- **pip** (Python package manager)
 
-## Performance Optimization
-**The system includes several Spark optimizations:**
+### Clone & Install Dependencies
 
-- Memory allocation tuning for executors and drivers
-- Parallelism configuration for efficient resource utilization
-- Data compression settings to minimize I/O overhead
-- Caching strategies for frequently accessed data
+```bash
+git clone https://github.com/23092003e/Stock-Price-Forecasting-System-Using-Apache-Spark.git
+cd Stock-Price-Forecasting-System-Using-Apache-Spark
+pip install -r requirement.txt
+```
 
-## Regulatory Compliance
-This system is designed as an analytical tool and does not provide financial advice. Users should consult financial professionals before making investment decisions based on predictions.
+---
 
-### License
-This project is provided under the MIT License. See LICENSE file for details.
+## Configuration
 
-### Contributors
+- **Data:** Place your raw and processed CSV files in the `data/` directory.
+- **Model Paths:** Update model and scaler paths in `app.py` or `test_interface.py` if needed.
+- **Environment Variables:**  
+  For PySpark compatibility, set:
+  ```bash
+  export PYSPARK_PYTHON=$(which python)
+  export PYSPARK_DRIVER_PYTHON=$(which python)
+  ```
+- **Config File:** (Optional) Create a `.env` or `config.yaml` for custom settings.
 
-Manh Hoang (23092003e)
+---
 
-### Acknowledgments
+## Usage
 
-- Financial data provided by Kaggle
-- Built with Apache Spark
+### Run the Dashboard
 
-##### If you have any questions, Just contact me: hoangvanmanh2309@gmail.com
+```bash
+streamlit run app.py
+```
+or
+```bash
+streamlit run test_interface.py
+```
+
+### Options & Environment Variables
+
+- `--server.port`: Set custom port for Streamlit (default: 8501)
+- `--server.headless true`: Run in headless mode (for servers)
+- **Model/Data Paths:** Edit in the script or via environment variables
+
+---
+
+## Examples & Screenshots
+
+**Example: Data Scaling Utility**
+```python
+from utils import scale_and_save_data
+
+train_scaled, test_scaled, scaler = scale_and_save_data(
+    'data/processed/train.csv',
+    'data/processed/test.csv',
+    'model/scaler.pkl',
+    columns_to_scale=['Close', 'Open', 'High', 'Low', 'Volume']
+)
+```
+
+**Dashboard Screenshot:**  
+![Dashboard Screenshot](image/demo_dashboard.png)
+
+---
+
+## Testing
+
+- **Run tests:**
+  ```bash
+  pytest
+  ```
+- **Linting:**
+  ```bash
+  flake8 .
+  ```
+- **Test Coverage:**
+  ```bash
+  pytest --cov=.
+  ```
+
+---
+
+## Contributing
+
+1. **Fork** this repository
+2. **Create a branch** (`git checkout -b feature/your-feature`)
+3. **Commit** your changes (`git commit -m 'Add new feature'`)
+4. **Push** to your branch (`git push origin feature/your-feature`)
+5. **Open a Pull Request**  
+   Please follow [Conventional Commits](https://www.conventionalcommits.org/) and PEP8 code style.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## Authors & Contact
+
+- **Manh Hoang** ([23092003e](https://github.com/23092003e))  
+  📧 hoangvanmanh2309@gmail.com
+
+For questions, suggestions, or issues, please [open an issue](https://github.com/23092003e/Stock-Price-Forecasting-System-Using-Apache-Spark/issues) or contact via email.
+
+---
+
+> **Disclaimer:** This application is for educational purposes only. Stock price predictions are not guaranteed and should not be used as financial advice.
 
     
