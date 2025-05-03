@@ -5,9 +5,6 @@
 
 > **A scalable, real-time stock price forecasting system for Netflix, powered by Apache Spark and advanced machine learning.**
 
-![Dashboard Screenshot](image/demo_dashboard.png)  
-<!-- Or use a link to a demo video/GIF if available -->
-
 ---
 
 ## Table of Contents
@@ -30,8 +27,6 @@
 
 **Netflix Stock Price Forecasting System** leverages Apache Spark for distributed data processing and machine learning to predict Netflix (NFLX) stock prices. The system provides an interactive dashboard for real-time forecasting, historical analysis, and model performance evaluation.
 
-- **Demo:** [YouTube Demo](https://youtu.be/your-demo-link) <!-- Replace with your actual demo link -->
-- **Live Dashboard:** _Coming soon_
 
 ---
 
