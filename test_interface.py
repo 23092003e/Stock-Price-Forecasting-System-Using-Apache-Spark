@@ -1,4 +1,5 @@
 import os, sys
+import logging
 
 os.environ["PYSPARK_PYTHON"] = sys.executable
 os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
@@ -27,8 +28,16 @@ lr_model_path = "model/linear_regressor_sklearn.pkl"
 lstm_model_path = "model/lstm_model.pth"
 hybrid_model_path = "model/hybrid_model.pkl"
 
-train_path = "data/processed/train.csv"
-test_path = "data/processed/test.csv"
+train_path = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\data\processed\train.csv"  
+test_path = r"C:\Users\ADMIN\Desktop\Stock-Price-Forecasting-System-Using-Apache-Spark\data\processed\test.csv"
+
+# Sử dụng đường dẫn tuyệt đối và đảm bảo định dạng Windows
+data_path = os.path.abspath(r"data\raw\NFLX.csv")
+print(f"Loading data from: {data_path}")
+print(f"File exists: {os.path.exists(data_path)}")
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class LSTMModel(torch.nn.Module):
     def __init__(self, input_size=1, output_size=1):
@@ -130,13 +139,19 @@ def load_data():
             test_pdf = test_pdf.fillna(method='ffill').fillna(method='bfill')
 
         # Initialize Spark with progress indicator
+        logger.info("Initializing Spark session...")
         with st.spinner('Initializing Spark session...'):
-            spark = (SparkSession.builder
-                    .master("local[*]")
-                    .appName("StreamlitScaling")
-                    .config("spark.pyspark.python", sys.executable)
-                    .config("spark.pyspark.driver.python", sys.executable)
-                    .getOrCreate())
+            spark = SparkSession.builder \
+                .appName("Netflix Stock Price Forecasting") \
+                .config("spark.driver.memory", "4g") \
+                .config("spark.executor.memory", "4g") \
+                .config("spark.python.worker.memory", "4g") \
+                .config("spark.driver.maxResultSize", "4g") \
+                .config("spark.sql.shuffle.partitions", "10") \
+                .config("spark.default.parallelism", "10") \
+                .config("spark.python.worker.reuse", "true") \
+                .master("local[*]") \
+                .getOrCreate()
 
         # Add enhanced statistics display
         st.sidebar.markdown("### Dataset Statistics")
@@ -193,10 +208,17 @@ def load_data():
         # Convert back to pandas
         df      = train_scaled_sdf.toPandas()
         test_df = test_scaled_sdf.toPandas()
+        logger.info("Loading data...")
+        print(f"Python version: {sys.version}")
+        print(f"Spark version: {spark.version}")
         return df, test_df
     except Exception as e:
         st.error(f"Error loading data: {e}")
         return None, None
+    finally:
+        # Clean up Spark session
+        if 'spark' in locals():
+            spark.stop()
 
 # Make predictions
 def predict_lr(model, scaler, last_values, days_ahead):
